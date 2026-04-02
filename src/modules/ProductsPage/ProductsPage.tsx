@@ -60,7 +60,7 @@ export const ProductsPage = ({ category }: { category: Category }) => {
       ? sortedProducts.slice(
           (safePage - 1) * itemsPerPage,
           safePage * itemsPerPage,
-      )
+        )
       : sortedProducts;
 
   const updateParams = (changes: Record<string, string | null>) => {
