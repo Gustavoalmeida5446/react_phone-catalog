@@ -1,0 +1,102 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.back {
+  cursor: pointer;
+
+  width: max-content;
+  padding: 0;
+  border: none;
+
+  color: #89939a;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(260px, 420px) 1fr;
+  gap: 32px;
+}
+
+.galleryImage {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  border: 1px solid #e2e6e9;
+  object-fit: contain;
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.thumb {
+  cursor: pointer;
+  padding: 0;
+}
+
+.thumb img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.section {
+  padding-top: 16px;
+  border-top: 1px solid #e2e6e9;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 20px;
+}
+
+.option {
+  padding: 10px 14px;
+  border: 1px solid #b4bdc3;
+}
+
+.activeOption {
+  border-color: #313237;
+  color: #fff;
+  background-color: #313237;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.button {
+  cursor: pointer;
+  padding: 12px 18px;
+}
+
+.primary {
+  border-color: #313237;
+  color: #fff;
+  background-color: #313237;
+}
+
+.secondary {
+  background-color: #f5f6f7;
+}
+
+.specs {
+  display: grid;
+  gap: 10px;
+  color: #313237;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}

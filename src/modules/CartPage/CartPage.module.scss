@@ -1,0 +1,51 @@
+.list {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 16px;
+  align-items: center;
+
+  padding: 18px;
+  border: 1px solid #e2e6e9;
+}
+
+.image {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  object-fit: contain;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.button {
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+}
+
+.checkout {
+  cursor: pointer;
+
+  margin-top: 24px;
+  padding: 14px 18px;
+  border-color: #313237;
+
+  color: #fff;
+
+  background-color: #313237;
+}
+
+@media (max-width: 767px) {
+  .item {
+    grid-template-columns: 1fr;
+  }
+}
