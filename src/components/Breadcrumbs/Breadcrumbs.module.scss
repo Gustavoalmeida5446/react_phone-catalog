@@ -1,0 +1,20 @@
+.breadcrumbs {
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #89939a;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  padding: 0;
+
+  list-style: none;
+}
+
+.current {
+  font-weight: 600;
+  color: #313237;
+}

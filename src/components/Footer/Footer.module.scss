@@ -1,0 +1,29 @@
+.footer {
+  border-top: 1px solid #e2e6e9;
+}
+
+.container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+
+  max-width: 1136px;
+  margin: 0 auto;
+  padding: 24px 16px;
+
+  color: #334155;
+}
+
+.button {
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+@media (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 16px 32px;
+  }
+}
