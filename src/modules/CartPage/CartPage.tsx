@@ -60,69 +60,90 @@ export const CartPage = () => {
   }
 
   return (
-    <section>
-      <h1>Cart</h1>
-      <p>
-        Total: {totalQuantity} items / ${totalPrice}
-      </p>
+    <section className={styles.cartPage}>
+      <h1 className={styles.title}>Cart</h1>
 
       {cartProducts.length === 0 ? (
-        <p>Your cart is empty</p>
+        <p className={styles.emptyState}>Your cart is empty</p>
       ) : (
-        <>
-          <div className={styles.list}>
-            {cartProducts.map(({ product, quantity }) => (
-              <article key={product.itemId} className={styles.item}>
-                <img
-                  src={normalizeImagePath(product.image)}
-                  alt={product.name}
-                  className={styles.image}
-                />
+        <div className={styles.content}>
+          <div className={styles.itemsSection}>
+            <div className={styles.list}>
+              {cartProducts.map(({ product, quantity }) => (
+                <article key={product.itemId} className={styles.item}>
+                  <div className={styles.itemLeft}>
+                    <button
+                      type="button"
+                      className={`${styles.button} ${styles.removeButton}`}
+                      onClick={() => removeFromCart(product.itemId)}
+                      aria-label="Remove item"
+                    >
+                      ×
+                    </button>
 
-                <div>
-                  <Link to={`/product/${product.itemId}`}>
-                    <h2>{product.name}</h2>
-                  </Link>
-                  <p>${product.price}</p>
-                </div>
+                    <img
+                      src={normalizeImagePath(product.image)}
+                      alt={product.name}
+                      className={styles.image}
+                    />
 
-                <div className={styles.actions}>
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={() => decrementCartItem(product.itemId)}
-                  >
-                    -
-                  </button>
-                  <span>{quantity}</span>
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={() => incrementCartItem(product.itemId)}
-                  >
-                    +
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={() => removeFromCart(product.itemId)}
-                    aria-label="Remove item"
-                  >
-                    ×
-                  </button>
-                </div>
-              </article>
-            ))}
+                    <div className={styles.itemInfo}>
+                      <Link
+                        to={`/product/${product.itemId}`}
+                        className={styles.itemNameLink}
+                      >
+                        <h2 className={styles.itemName}>{product.name}</h2>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemRight}>
+                    <div className={styles.quantityControl}>
+                      <button
+                        type="button"
+                        className={`${styles.button} ${styles.quantityButton}`}
+                        onClick={() => decrementCartItem(product.itemId)}
+                      >
+                        -
+                      </button>
+                      <span className={styles.quantityValue}>{quantity}</span>
+                      <button
+                        type="button"
+                        className={`${styles.button} ${styles.quantityButton}`}
+                        onClick={() => incrementCartItem(product.itemId)}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <p className={styles.itemPrice}>${product.price}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
 
-          <button
-            type="button"
-            className={styles.checkout}
-            onClick={handleCheckout}
-          >
-            Checkout
-          </button>
-        </>
+          <aside className={styles.summarySection}>
+            <div className={styles.summary}>
+              <div className={styles.summaryContent}>
+                <h2 className={styles.summaryPrice}>${totalPrice}</h2>
+                <p className={styles.summaryText}>
+                  Total for {totalQuantity} items
+                </p>
+              </div>
+
+              <div className={styles.summaryDivider} />
+
+              <button
+                type="button"
+                className={styles.checkout}
+                onClick={handleCheckout}
+              >
+                Checkout
+              </button>
+            </div>
+          </aside>
+        </div>
       )}
     </section>
   );

@@ -39,6 +39,8 @@ button,
 input,
 select {
   font: inherit;
+  border-radius: 0;
+  appearance: none;
 }
 
 img {
@@ -51,8 +53,6 @@ input {
   border: 1px solid #b4bdc3;
   background-color: #fff;
 }
-
-
 
 .visually-hidden {
   position: absolute;

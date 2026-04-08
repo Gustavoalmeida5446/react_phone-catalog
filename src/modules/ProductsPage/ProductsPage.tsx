@@ -109,18 +109,18 @@ export const ProductsPage = ({ category }: { category: Category }) => {
   }
 
   return (
-    <section>
+    <section className={styles.page}>
       <div className={styles.header}>
-        <div>
-          <h1>{categoryLabels[category]} page</h1>
-          <p>
+        <div className={styles.titleBlock}>
+          <h1 className={styles.title}>{categoryLabels[category]}</h1>
+          <p className={styles.count}>
             {products.length} {categoryLabels[category].toLowerCase()}
           </p>
         </div>
 
         <div className={styles.controls}>
           <label className={styles.control}>
-            Sort by
+            <span className={styles.controlLabel}>Sort by</span>
             <select
               value={sortBy}
               onChange={handleSortChange}
@@ -133,7 +133,7 @@ export const ProductsPage = ({ category }: { category: Category }) => {
           </label>
 
           <label className={styles.control}>
-            Items on page
+            <span className={styles.controlLabel}>Items on page</span>
             <select
               value={perPage}
               onChange={handlePerPageChange}

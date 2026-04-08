@@ -28,10 +28,23 @@ export const ProductCard = ({ product }: { product: Product }) => {
         <span className={styles.fullPrice}>${product.fullPrice}</span>
       </div>
 
+      <div className={styles.divider} />
+
       <div className={styles.specs}>
-        <span>Screen: {product.screen}</span>
-        <span>Capacity: {product.capacity}</span>
-        <span>RAM: {product.ram}</span>
+        <div className={styles.specRow}>
+          <span className={styles.specLabel}>Screen</span>
+          <span className={styles.specValue}>{product.screen}</span>
+        </div>
+
+        <div className={styles.specRow}>
+          <span className={styles.specLabel}>Capacity</span>
+          <span className={styles.specValue}>{product.capacity}</span>
+        </div>
+
+        <div className={styles.specRow}>
+          <span className={styles.specLabel}>RAM</span>
+          <span className={styles.specValue}>{product.ram}</span>
+        </div>
       </div>
 
       <div className={styles.actions}>

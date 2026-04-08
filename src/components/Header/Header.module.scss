@@ -2,65 +2,176 @@
   position: sticky;
   z-index: 1;
   top: 0;
-
   border-bottom: 1px solid #e2e6e9;
-
   background-color: #fff;
 }
 
-.container {
+.topBar {
   display: flex;
-  gap: 16px;
   align-items: center;
   justify-content: space-between;
-
-  max-width: 1136px;
-  margin: 0 auto;
-  padding: 24px 16px;
+  min-height: 48px;
+  padding-left: 16px;
+  border-bottom: 1px solid #e2e6e9;
 }
 
 .logo {
-  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 64px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.logoTop,
+.logoBottom {
+  font-size: 12px;
   font-weight: 700;
 }
 
 .nav {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  align-self: stretch;
+  margin-left: 48px;
+}
+
+.actions {
+  display: flex;
+  margin-left: auto;
+}
+
+.iconLink,
+.menuButton,
+.mobileIconLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid #e2e6e9;
+  color: #313237;
+  background-color: #fff;
+}
+
+.menuButton {
+  display: none;
+}
+
+.icon {
+  font-size: 18px;
+  line-height: 1;
 }
 
 .link {
-  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 32px;
+  border-bottom: 3px solid transparent;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #89939a;
 }
 
 .active {
   color: #313237;
+  border-bottom-color: #313237;
 }
 
 .badge {
-  display: inline-flex;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
   align-items: center;
   justify-content: center;
-
-  min-width: 20px;
-  height: 20px;
-  margin-left: 8px;
-  padding: 0 6px;
-  border-radius: 10px;
-
-  font-size: 12px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 4px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  font-size: 9px;
+  line-height: 1;
   font-weight: 700;
   color: #fff;
-
   background-color: #eb5757;
 }
 
+.mobileMenu {
+  display: none;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding-top: 24px;
+}
+
+.mobileActions {
+  display: flex;
+  margin-top: auto;
+  border-top: 1px solid #e2e6e9;
+}
+
 @media (max-width: 767px) {
-  .container {
+  .topBar {
+    padding-left: 16px;
+  }
+
+  .nav,
+  .actions {
+    display: none;
+  }
+
+  .menuButton {
+    display: flex;
+  }
+
+  .mobileMenuOpen {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 14px 16px;
+    min-height: calc(100vh - 49px);
+    background-color: #fff;
+  }
+
+  .mobileNav .link {
+    height: auto;
+    padding: 0;
+  }
+
+  .mobileActions {
+    width: 100%;
+  }
+
+  .mobileIconLink {
+    flex: 1;
+    width: auto;
+    height: 64px;
+    border-left: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .topBar {
+    min-height: 64px;
+    padding-left: 24px;
+  }
+
+  .iconLink {
+    width: 64px;
+    height: 64px;
+  }
+
+  .badge {
+    top: 18px;
+    right: 18px;
   }
 }

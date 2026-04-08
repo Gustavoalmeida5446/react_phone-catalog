@@ -4,6 +4,7 @@ import { ProductList } from '../../components/ProductList';
 import { useShop } from '../../context/ShopContext';
 import { getProducts } from '../../services/api';
 import { Product } from '../../types/catalog';
+import styles from './FavoritesPage.module.scss';
 
 export const FavoritesPage = () => {
   const { favorites } = useShop();
@@ -25,12 +26,12 @@ export const FavoritesPage = () => {
   );
 
   return (
-    <section>
-      <h1>Favorites</h1>
-      <p>{favoriteProducts.length} items</p>
+    <section className={styles.page}>
+      <h1 className={styles.title}>Favourites</h1>
+      <p className={styles.count}>{favoriteProducts.length} items</p>
 
       {favoriteProducts.length === 0 ? (
-        <p>You have no favorite products yet.</p>
+        <p className={styles.emptyState}>You have no favorite products yet.</p>
       ) : (
         <ProductList products={favoriteProducts} />
       )}

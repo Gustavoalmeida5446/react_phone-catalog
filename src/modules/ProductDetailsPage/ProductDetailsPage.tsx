@@ -14,6 +14,26 @@ import { Product, ProductDetails } from '../../types/catalog';
 import { categoryLabels, normalizeImagePath } from '../../utils/category';
 import styles from './ProductDetailsPage.module.scss';
 
+const colorMap: Record<string, string> = {
+  black: '#313237',
+  white: '#fafbfc',
+  yellow: '#f6d65a',
+  purple: '#8d5cf6',
+  red: '#eb5757',
+  gold: '#f0c68b',
+  rosegold: '#e9b4b4',
+  silver: '#d6d6d6',
+  coral: '#ff7f50',
+  green: '#6fcf97',
+  midnight: '#25303b',
+  midnightgreen: '#5f7170',
+  spacegray: '#4c4c4c',
+  'space-gray': '#4c4c4c',
+  'sky-blue': '#9ec7e8',
+  starlight: '#f3e7c9',
+  pink: '#f7b4d0',
+};
+
 const buildVariantLink = (
   variants: ProductDetails[],
   color: string,
@@ -102,72 +122,91 @@ export const ProductDetailsPage = () => {
         Back
       </button>
 
-      <h1>{product.name}</h1>
+      <h1 className={styles.title}>{product.name}</h1>
 
       <div className={styles.hero}>
-        <div>
-          <img
-            src={normalizeImagePath(selectedImage)}
-            alt={product.name}
-            className={styles.galleryImage}
-          />
-
+        <div className={styles.gallery}>
           <div className={styles.thumbs}>
             {product.images.map(image => (
               <button
                 type="button"
                 key={image}
-                className={styles.thumb}
+                className={`${styles.thumb} ${image === selectedImage ? styles.activeThumb : ''}`.trim()}
                 onClick={() => setSelectedImage(image)}
               >
                 <img src={normalizeImagePath(image)} alt={product.name} />
               </button>
             ))}
           </div>
+
+          <div className={styles.imageBox}>
+            <img
+              src={normalizeImagePath(selectedImage)}
+              alt={product.name}
+              className={styles.galleryImage}
+            />
+          </div>
         </div>
 
-        <div>
-          <div className={styles.section}>
-            <h2>Available colors</h2>
-            <div className={styles.options}>
-              {product.colorsAvailable.map(color => {
-                const targetId = buildVariantLink(
-                  variants,
-                  color,
-                  product.capacity,
-                );
+        <div className={styles.buyBlock}>
+          <div className={styles.buyPanel}>
+            <div className={styles.optionSection}>
+              <div className={styles.optionHeader}>
+                <h2 className={styles.optionTitle}>Available colors</h2>
+              </div>
 
-                return (
-                  <Link
-                    key={color}
-                    to={targetId ? `/product/${targetId}` : '#'}
-                    className={`${styles.option} ${color === product.color ? styles.activeOption : ''}`.trim()}
-                  >
-                    {color}
-                  </Link>
-                );
-              })}
+              <div className={styles.colorOptions}>
+                {product.colorsAvailable.map(color => {
+                  const targetId = buildVariantLink(
+                    variants,
+                    color,
+                    product.capacity,
+                  );
+
+                  return (
+                    <Link
+                      key={color}
+                      to={targetId ? `/product/${targetId}` : '#'}
+                      className={`${styles.colorOption} ${color === product.color ? styles.activeColorOption : ''}`.trim()}
+                      style={{ backgroundColor: colorMap[color] || color }}
+                      aria-label={color}
+                    >
+                      <span className="visually-hidden">{color}</span>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
 
-            <h2>Select capacity</h2>
-            <div className={styles.options}>
-              {product.capacityAvailable.map(capacity => {
-                const targetId = buildVariantLink(
-                  variants,
-                  product.color,
-                  capacity,
-                );
+            <div className={styles.optionSection}>
+              <div className={styles.optionHeader}>
+                <h2 className={styles.optionTitle}>Select capacity</h2>
+              </div>
 
-                return (
-                  <Link
-                    key={capacity}
-                    to={targetId ? `/product/${targetId}` : '#'}
-                    className={`${styles.option} ${capacity === product.capacity ? styles.activeOption : ''}`.trim()}
-                  >
-                    {capacity}
-                  </Link>
-                );
-              })}
+              <div className={styles.capacityOptions}>
+                {product.capacityAvailable.map(capacity => {
+                  const targetId = buildVariantLink(
+                    variants,
+                    product.color,
+                    capacity,
+                  );
+
+                  return (
+                    <Link
+                      key={capacity}
+                      to={targetId ? `/product/${targetId}` : '#'}
+                      className={`${styles.capacityOption} ${capacity === product.capacity ? styles.activeCapacityOption : ''}`.trim()}
+                    >
+                      {capacity}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className={styles.priceRow}>
+              <span className={styles.price}>${product.priceDiscount}</span>
+              <span className={styles.fullPrice}>${product.priceRegular}</span>
             </div>
 
             <div className={styles.actions}>
@@ -182,39 +221,86 @@ export const ProductDetailsPage = () => {
 
               <button
                 type="button"
-                className={`${styles.button} ${styles.secondary}`.trim()}
+                className={`${styles.button} ${styles.iconButton}`.trim()}
                 onClick={() => toggleFavorite(summary.itemId)}
+                aria-label={
+                  isFavorite(summary.itemId)
+                    ? 'Remove from favorites'
+                    : 'Add to favorites'
+                }
               >
-                {isFavorite(summary.itemId) ? 'Favorited' : 'Add to favorites'}
+                {isFavorite(summary.itemId) ? '♥' : '♡'}
               </button>
             </div>
 
             <div className={styles.specs}>
-              <span>Price: ${product.priceDiscount}</span>
-              <span>Regular price: ${product.priceRegular}</span>
-              <span>Screen: {product.screen}</span>
-              <span>Resolution: {product.resolution}</span>
-              <span>Processor: {product.processor}</span>
-              <span>RAM: {product.ram}</span>
+              <div className={styles.specRow}>
+                <span className={styles.specLabel}>Screen</span>
+                <span className={styles.specValue}>{product.screen}</span>
+              </div>
+              <div className={styles.specRow}>
+                <span className={styles.specLabel}>Resolution</span>
+                <span className={styles.specValue}>{product.resolution}</span>
+              </div>
+              <div className={styles.specRow}>
+                <span className={styles.specLabel}>Processor</span>
+                <span className={styles.specValue}>{product.processor}</span>
+              </div>
+              <div className={styles.specRow}>
+                <span className={styles.specLabel}>RAM</span>
+                <span className={styles.specValue}>{product.ram}</span>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className={styles.section}>
-            <h2>About</h2>
+      <div className={styles.infoSections}>
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>About</h2>
+          <div className={styles.descriptionList}>
             {product.description.map(block => (
-              <article key={block.title}>
-                <h3>{block.title}</h3>
+              <article key={block.title} className={styles.descriptionBlock}>
+                <h3 className={styles.descriptionTitle}>{block.title}</h3>
                 {block.text.map(paragraph => (
-                  <p key={paragraph}>{paragraph}</p>
+                  <p key={paragraph} className={styles.descriptionText}>
+                    {paragraph}
+                  </p>
                 ))}
               </article>
             ))}
           </div>
         </div>
+
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Tech specs</h2>
+          <div className={styles.techSpecs}>
+            <div className={styles.specRow}>
+              <span className={styles.specLabel}>Screen</span>
+              <span className={styles.specValue}>{product.screen}</span>
+            </div>
+            <div className={styles.specRow}>
+              <span className={styles.specLabel}>Resolution</span>
+              <span className={styles.specValue}>{product.resolution}</span>
+            </div>
+            <div className={styles.specRow}>
+              <span className={styles.specLabel}>Processor</span>
+              <span className={styles.specValue}>{product.processor}</span>
+            </div>
+            <div className={styles.specRow}>
+              <span className={styles.specLabel}>RAM</span>
+              <span className={styles.specValue}>{product.ram}</span>
+            </div>
+            <div className={styles.specRow}>
+              <span className={styles.specLabel}>Built in memory</span>
+              <span className={styles.specValue}>{product.capacity}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className={styles.section}>
-        <h2>You may also like</h2>
+      <div className={styles.recommendations}>
+        <h2 className={styles.sectionTitle}>You may also like</h2>
         <ProductList products={suggestedProducts} />
       </div>
     </section>
