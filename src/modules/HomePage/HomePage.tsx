@@ -4,37 +4,50 @@ import { ProductList } from '../../components/ProductList';
 import { Loader } from '../../components/Loader';
 import { getProducts } from '../../services/api';
 import { Category, Product } from '../../types/catalog';
-import { categoryLabels, categoryRouteList } from '../../utils/category';
+import {
+  categoryLabels,
+  categoryRouteList,
+  getPublicAssetPath,
+} from '../../utils/category';
 import styles from './HomePage.module.scss';
 
 const heroSlides = [
   {
     id: 'phones',
-    title: 'Now available in our store!',
+    titleTop: 'Now available',
+    titleBottom: 'in our store!',
+    subtitle: 'Be the first!',
     label: 'iPhone 14 Pro',
-    image: '/img/banner-phones.png',
+    description: 'Pro. Beyond.',
+    image: getPublicAssetPath('/img/banner-phones.png'),
     to: '/phones',
   },
   {
     id: 'tablets',
-    title: 'Powerful tablets for work and fun',
-    label: 'Tablets',
-    image: '/img/banner-tablets.png',
+    titleTop: 'Powerful tablets',
+    titleBottom: 'for work and fun',
+    subtitle: 'For work, play, and everything in between.',
+    label: 'iPad lineup',
+    description: 'Big ideas. Bigger screens.',
+    image: getPublicAssetPath('/img/banner-tablets.png'),
     to: '/tablets',
   },
   {
     id: 'accessories',
-    title: 'Accessories for every device',
-    label: 'Accessories',
-    image: '/img/banner-accessories.png',
+    titleTop: 'Accessories',
+    titleBottom: 'for every device',
+    subtitle: 'Complete your setup with the right details.',
+    label: 'Must-have extras',
+    description: 'Cases, audio, chargers, and more.',
+    image: getPublicAssetPath('/img/banner-accessories.png'),
     to: '/accessories',
   },
 ];
 
 const categoryImages: Record<Category, string> = {
-  phones: '/img/category-phones.png',
-  tablets: '/img/category-tablets.png',
-  accessories: '/img/category-accessories.png',
+  phones: getPublicAssetPath('/img/category-phones.png'),
+  tablets: getPublicAssetPath('/img/category-tablets.png'),
+  accessories: getPublicAssetPath('/img/category-accessories.png'),
 };
 
 export const HomePage = () => {
@@ -109,14 +122,27 @@ export const HomePage = () => {
 
         <div className={styles.heroBanner}>
           <div className={styles.heroContent}>
-            <p className={styles.heroText}>{currentHeroSlide.title}</p>
+            <div className={styles.heroCopy}>
+              <p className={styles.heroText}>
+                <span className={styles.heroAccent}>{currentHeroSlide.titleTop}</span>
+                <span className={styles.heroTextLine}>{currentHeroSlide.titleBottom}</span>
+              </p>
+              <p className={styles.heroSubtitle}>{currentHeroSlide.subtitle}</p>
+            </div>
+
             <Link to={currentHeroSlide.to} className={styles.heroButton}>
               Order now
             </Link>
           </div>
 
           <div className={styles.heroProduct}>
-            <span className={styles.heroLabel}>{currentHeroSlide.label}</span>
+            <div className={styles.heroProductInfo}>
+              <span className={styles.heroLabel}>{currentHeroSlide.label}</span>
+              <span className={styles.heroDescription}>
+                {currentHeroSlide.description}
+              </span>
+            </div>
+
             <img
               src={currentHeroSlide.image}
               alt={currentHeroSlide.label}

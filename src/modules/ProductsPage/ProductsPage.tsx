@@ -9,6 +9,8 @@ import styles from './ProductsPage.module.scss';
 
 type SortBy = 'age' | 'title' | 'price';
 type PerPage = '4' | '8' | '16' | 'all';
+const sortOptions: SortBy[] = ['age', 'title', 'price'];
+const perPageOptions: PerPage[] = ['4', '8', '16', 'all'];
 
 const sortProducts = (products: Product[], sortBy: SortBy) => {
   const copy = [...products];
@@ -22,6 +24,18 @@ const sortProducts = (products: Product[], sortBy: SortBy) => {
   }
 
   return copy.sort((first, second) => second.year - first.year);
+};
+
+const getSortBy = (value: string | null): SortBy =>
+  sortOptions.includes(value as SortBy) ? (value as SortBy) : 'age';
+
+const getPerPage = (value: string | null): PerPage =>
+  perPageOptions.includes(value as PerPage) ? (value as PerPage) : 'all';
+
+const getPage = (value: string | null) => {
+  const parsedPage = Number(value);
+
+  return Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 };
 
 export const ProductsPage = ({ category }: { category: Category }) => {
@@ -40,9 +54,9 @@ export const ProductsPage = ({ category }: { category: Category }) => {
       .finally(() => setLoading(false));
   }, [category]);
 
-  const sortBy = (searchParams.get('sort') as SortBy | null) ?? 'age';
-  const perPage = (searchParams.get('perPage') as PerPage | null) ?? 'all';
-  const page = Number(searchParams.get('page') ?? '1');
+  const sortBy = getSortBy(searchParams.get('sort'));
+  const perPage = getPerPage(searchParams.get('perPage'));
+  const page = getPage(searchParams.get('page'));
 
   const sortedProducts = useMemo(
     () => sortProducts(products, sortBy),
@@ -63,34 +77,32 @@ export const ProductsPage = ({ category }: { category: Category }) => {
         )
       : sortedProducts;
 
-  const updateParams = (changes: Record<string, string | null>) => {
+  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const nextParams = new URLSearchParams(searchParams);
+    const value = event.target.value;
 
-    Object.entries(changes).forEach(([key, value]) => {
-      if (!value) {
-        nextParams.delete(key);
+    if (value === 'age') {
+      nextParams.delete('sort');
+    } else {
+      nextParams.set('sort', value);
+    }
 
-        return;
-      }
-
-      nextParams.set(key, value);
-    });
-
+    nextParams.delete('page');
     setSearchParams(nextParams);
   };
 
-  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    updateParams({
-      sort: event.target.value === 'age' ? null : event.target.value,
-      page: null,
-    });
-  };
-
   const handlePerPageChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    updateParams({
-      perPage: event.target.value === 'all' ? null : event.target.value,
-      page: null,
-    });
+    const nextParams = new URLSearchParams(searchParams);
+    const value = event.target.value;
+
+    if (value === 'all') {
+      nextParams.delete('perPage');
+    } else {
+      nextParams.set('perPage', value);
+    }
+
+    nextParams.delete('page');
+    setSearchParams(nextParams);
   };
 
   if (loading) {
@@ -161,12 +173,20 @@ export const ProductsPage = ({ category }: { category: Category }) => {
                   <button
                     type="button"
                     key={currentPage}
-                    className={`${styles.pageButton} ${currentPage === safePage ? styles.active : ''}`.trim()}
-                    onClick={() =>
-                      updateParams({
-                        page: currentPage === 1 ? null : String(currentPage),
-                      })
-                    }
+                    className={`${styles.pageButton} ${
+                      currentPage === safePage ? styles.active : ''
+                    }`.trim()}
+                    onClick={() => {
+                      const nextParams = new URLSearchParams(searchParams);
+
+                      if (currentPage === 1) {
+                        nextParams.delete('page');
+                      } else {
+                        nextParams.set('page', String(currentPage));
+                      }
+
+                      setSearchParams(nextParams);
+                    }}
                   >
                     {currentPage}
                   </button>

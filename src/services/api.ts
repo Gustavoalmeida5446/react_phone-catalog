@@ -1,7 +1,8 @@
 import { Category, Product, ProductDetails } from '../types/catalog';
+import { getPublicAssetPath } from '../utils/category';
 
 export const getProducts = async (): Promise<Product[]> => {
-  const response = await fetch('/api/products.json');
+  const response = await fetch(getPublicAssetPath('/api/products.json'));
 
   if (!response.ok) {
     throw new Error('Failed to load products');
@@ -13,7 +14,7 @@ export const getProducts = async (): Promise<Product[]> => {
 export const getCategoryProducts = async (
   category: Category,
 ): Promise<ProductDetails[]> => {
-  const response = await fetch(`/api/${category}.json`);
+  const response = await fetch(getPublicAssetPath(`/api/${category}.json`));
 
   if (!response.ok) {
     throw new Error(`Failed to load ${category}`);

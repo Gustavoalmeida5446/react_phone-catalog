@@ -1,4 +1,5 @@
 import styles from './Footer.module.scss';
+import { getPublicAssetPath } from '../../utils/category';
 
 export const Footer = () => {
   const handleBackToTop = () => {
@@ -14,8 +15,11 @@ export const Footer = () => {
           rel="noreferrer"
           className={styles.logo}
         >
-          <span className={styles.logoTop}>Nice</span>
-          <span className={styles.logoBottom}>Gadgets</span>
+          <img
+            src={getPublicAssetPath('/img/Logo.svg')}
+            alt="Nice Gadgets"
+            className={styles.logoImage}
+          />
         </a>
 
         <nav className={styles.nav} aria-label="Footer navigation">

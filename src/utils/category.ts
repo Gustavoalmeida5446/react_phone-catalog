@@ -18,5 +18,8 @@ export const categoryRouteList: Category[] = [
   'accessories',
 ];
 
+export const getPublicAssetPath = (path: string) =>
+  `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
+
 export const normalizeImagePath = (path: string) =>
-  path.startsWith('/') ? path : `/${path}`;
+  getPublicAssetPath(path);

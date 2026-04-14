@@ -6,7 +6,6 @@ import { ProductList } from '../../components/ProductList';
 import { useShop } from '../../context/ShopContext';
 import {
   getProductDetails,
-  getProducts,
   getProductVariants,
   getRecommendedProducts,
 } from '../../services/api';
@@ -43,12 +42,19 @@ const buildVariantLink = (
     variant => variant.color === color && variant.capacity === capacity,
   )?.id;
 
+const getTechSpecs = (product: ProductDetails) => [
+  { label: 'Screen', value: product.screen },
+  { label: 'Resolution', value: product.resolution },
+  { label: 'Processor', value: product.processor },
+  { label: 'RAM', value: product.ram },
+  { label: 'Built in memory', value: product.capacity },
+];
+
 export const ProductDetailsPage = () => {
   const { productId = '' } = useParams();
   const navigate = useNavigate();
   const { addToCart, isFavorite, isInCart, toggleFavorite } = useShop();
   const [product, setProduct] = useState<ProductDetails | null>(null);
-  const [summary, setSummary] = useState<Product | null>(null);
   const [variants, setVariants] = useState<ProductDetails[]>([]);
   const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
   const [selectedImage, setSelectedImage] = useState('');
@@ -57,33 +63,28 @@ export const ProductDetailsPage = () => {
   useEffect(() => {
     setLoading(true);
     setProduct(null);
-    setSummary(null);
     setVariants([]);
+    setSuggestedProducts([]);
 
-    Promise.all([getProducts(), getProductDetails(productId)])
-      .then(async ([products, currentProduct]) => {
-        const currentSummary =
-          products.find(item => item.itemId === productId) || null;
-
-        setSummary(currentSummary);
+    getProductDetails(productId)
+      .then(currentProduct => {
         setProduct(currentProduct);
         setSelectedImage(currentProduct?.images[0] || '');
-
-        if (currentProduct) {
-          const currentVariants = await getProductVariants(
-            currentProduct.category,
-            currentProduct.namespaceId,
-          );
-
-          setVariants(currentVariants);
-        }
-
-        const recommended = await getRecommendedProducts(productId);
-
-        setSuggestedProducts(recommended);
       })
       .finally(() => setLoading(false));
   }, [productId]);
+
+  useEffect(() => {
+    if (!product) {
+      return;
+    }
+
+    getProductVariants(product.category, product.namespaceId).then(setVariants);
+
+    getRecommendedProducts(product.id).then(setSuggestedProducts);
+  }, [product]);
+
+  const techSpecs = product ? getTechSpecs(product) : [];
 
   const breadcrumbItems = useMemo(() => {
     if (!product) {
@@ -101,10 +102,12 @@ export const ProductDetailsPage = () => {
     return <Loader />;
   }
 
-  if (!product || !summary) {
+  if (!product) {
     return (
       <section>
-        <Breadcrumbs items={breadcrumbItems} />
+        <Breadcrumbs
+          items={[{ label: 'Home', to: '/' }, { label: 'Product not found' }]}
+        />
         <h1>Product was not found</h1>
       </section>
     );
@@ -131,7 +134,9 @@ export const ProductDetailsPage = () => {
               <button
                 type="button"
                 key={image}
-                className={`${styles.thumb} ${image === selectedImage ? styles.activeThumb : ''}`.trim()}
+                className={`${styles.thumb} ${
+                  image === selectedImage ? styles.activeThumb : ''
+                }`.trim()}
                 onClick={() => setSelectedImage(image)}
               >
                 <img src={normalizeImagePath(image)} alt={product.name} />
@@ -167,7 +172,9 @@ export const ProductDetailsPage = () => {
                     <Link
                       key={color}
                       to={targetId ? `/product/${targetId}` : '#'}
-                      className={`${styles.colorOption} ${color === product.color ? styles.activeColorOption : ''}`.trim()}
+                      className={`${styles.colorOption} ${
+                        color === product.color ? styles.activeColorOption : ''
+                      }`.trim()}
                       style={{ backgroundColor: colorMap[color] || color }}
                       aria-label={color}
                     >
@@ -195,7 +202,11 @@ export const ProductDetailsPage = () => {
                     <Link
                       key={capacity}
                       to={targetId ? `/product/${targetId}` : '#'}
-                      className={`${styles.capacityOption} ${capacity === product.capacity ? styles.activeCapacityOption : ''}`.trim()}
+                      className={`${styles.capacityOption} ${
+                        capacity === product.capacity
+                          ? styles.activeCapacityOption
+                          : ''
+                      }`.trim()}
                     >
                       {capacity}
                     </Link>
@@ -213,43 +224,33 @@ export const ProductDetailsPage = () => {
               <button
                 type="button"
                 className={`${styles.button} ${styles.primary}`.trim()}
-                onClick={() => addToCart(summary.itemId)}
-                disabled={isInCart(summary.itemId)}
+                onClick={() => addToCart(productId)}
+                disabled={isInCart(productId)}
               >
-                {isInCart(summary.itemId) ? 'Added to cart' : 'Add to cart'}
+                {isInCart(productId) ? 'Added to cart' : 'Add to cart'}
               </button>
 
               <button
                 type="button"
                 className={`${styles.button} ${styles.iconButton}`.trim()}
-                onClick={() => toggleFavorite(summary.itemId)}
+                onClick={() => toggleFavorite(productId)}
                 aria-label={
-                  isFavorite(summary.itemId)
+                  isFavorite(productId)
                     ? 'Remove from favorites'
                     : 'Add to favorites'
                 }
               >
-                {isFavorite(summary.itemId) ? '♥' : '♡'}
+                {isFavorite(productId) ? '♥' : '♡'}
               </button>
             </div>
 
             <div className={styles.specs}>
-              <div className={styles.specRow}>
-                <span className={styles.specLabel}>Screen</span>
-                <span className={styles.specValue}>{product.screen}</span>
-              </div>
-              <div className={styles.specRow}>
-                <span className={styles.specLabel}>Resolution</span>
-                <span className={styles.specValue}>{product.resolution}</span>
-              </div>
-              <div className={styles.specRow}>
-                <span className={styles.specLabel}>Processor</span>
-                <span className={styles.specValue}>{product.processor}</span>
-              </div>
-              <div className={styles.specRow}>
-                <span className={styles.specLabel}>RAM</span>
-                <span className={styles.specValue}>{product.ram}</span>
-              </div>
+              {techSpecs.slice(0, 4).map(spec => (
+                <div key={spec.label} className={styles.specRow}>
+                  <span className={styles.specLabel}>{spec.label}</span>
+                  <span className={styles.specValue}>{spec.value}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -275,26 +276,12 @@ export const ProductDetailsPage = () => {
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Tech specs</h2>
           <div className={styles.techSpecs}>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Screen</span>
-              <span className={styles.specValue}>{product.screen}</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Resolution</span>
-              <span className={styles.specValue}>{product.resolution}</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Processor</span>
-              <span className={styles.specValue}>{product.processor}</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>RAM</span>
-              <span className={styles.specValue}>{product.ram}</span>
-            </div>
-            <div className={styles.specRow}>
-              <span className={styles.specLabel}>Built in memory</span>
-              <span className={styles.specValue}>{product.capacity}</span>
-            </div>
+            {techSpecs.map(spec => (
+              <div key={spec.label} className={styles.specRow}>
+                <span className={styles.specLabel}>{spec.label}</span>
+                <span className={styles.specValue}>{spec.value}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

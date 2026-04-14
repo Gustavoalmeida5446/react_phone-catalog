@@ -28,23 +28,30 @@ const CART_KEY = 'phone-catalog:cart';
 
 const ShopContext = createContext<ShopContextValue | null>(null);
 
-const readJson = <T,>(key: string, fallback: T): T => {
-  try {
-    const value = localStorage.getItem(key);
-
-    return value ? (JSON.parse(value) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
 export const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [cart, setCart] = useState<CartEntry[]>([]);
 
   useEffect(() => {
-    setFavorites(readJson<string[]>(FAVORITES_KEY, []));
-    setCart(readJson<CartEntry[]>(CART_KEY, []));
+    try {
+      const storedFavorites = localStorage.getItem(FAVORITES_KEY);
+
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
+      }
+    } catch (e) {
+      // It's fine, we'll use the default empty array
+    }
+
+    try {
+      const storedCart = localStorage.getItem(CART_KEY);
+
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
+      }
+    } catch (e) {
+      // It's fine, we'll use the default empty array
+    }
   }, []);
 
   useEffect(() => {
@@ -90,19 +97,25 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const decrementCartItem = (itemId: string) => {
-    setCart(currentCart =>
-      currentCart.flatMap(item => {
-        if (item.itemId !== itemId) {
-          return item;
+    setCart(currentCart => {
+      const targetItem = currentCart.find(item => item.itemId === itemId);
+
+      if (!targetItem) {
+        return currentCart;
+      }
+
+      if (targetItem.quantity === 1) {
+        return currentCart.filter(item => item.itemId !== itemId);
+      }
+
+      return currentCart.map(item => {
+        if (item.itemId === itemId) {
+          return { ...item, quantity: item.quantity - 1 };
         }
 
-        if (item.quantity === 1) {
-          return [];
-        }
-
-        return { ...item, quantity: item.quantity - 1 };
-      }),
-    );
+        return item;
+      });
+    });
   };
 
   const removeFromCart = (itemId: string) => {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
+import { getPublicAssetPath } from '../../utils/category';
 import styles from './Header.module.scss';
 
 const navItems = [
@@ -25,8 +26,11 @@ export const Header = () => {
     <header className={styles.header}>
       <div className={styles.topBar}>
         <NavLink to="/" className={styles.logo} onClick={closeMenu}>
-          <span className={styles.logoTop}>Nice</span>
-          <span className={styles.logoBottom}>Gadgets</span>
+          <img
+            src={getPublicAssetPath('/img/Logo.svg')}
+            alt="Nice Gadgets"
+            className={styles.logoImage}
+          />
         </NavLink>
 
         <nav className={styles.nav} aria-label="Main navigation">
