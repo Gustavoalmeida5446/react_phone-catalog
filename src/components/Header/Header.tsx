@@ -48,14 +48,24 @@ export const Header = () => {
 
         <div className={styles.actions}>
           <NavLink to="/favorites" className={styles.iconLink}>
-            <span className={styles.icon}>♡</span>
+            <img
+              src={getPublicAssetPath('/img/Vector (Stroke).svg')}
+              alt=""
+              aria-hidden="true"
+              className={styles.iconImage}
+            />
             {favoritesCount > 0 && (
               <span className={styles.badge}>{favoritesCount}</span>
             )}
           </NavLink>
 
           <NavLink to="/cart" className={styles.iconLink}>
-            <span className={styles.icon}>▢</span>
+            <img
+              src={getPublicAssetPath('/img/Group 17.svg')}
+              alt=""
+              aria-hidden="true"
+              className={styles.iconImage}
+            />
             {cartItemsCount > 0 && (
               <span className={styles.badge}>{cartItemsCount}</span>
             )}
@@ -93,7 +103,12 @@ export const Header = () => {
             className={styles.mobileIconLink}
             onClick={closeMenu}
           >
-            <span className={styles.icon}>♡</span>
+            <img
+              src={getPublicAssetPath('/img/Vector (Stroke).svg')}
+              alt=""
+              aria-hidden="true"
+              className={styles.iconImage}
+            />
             {favoritesCount > 0 && (
               <span className={styles.badge}>{favoritesCount}</span>
             )}
@@ -104,7 +119,12 @@ export const Header = () => {
             className={styles.mobileIconLink}
             onClick={closeMenu}
           >
-            <span className={styles.icon}>▢</span>
+            <img
+              src={getPublicAssetPath('/img/Group 17.svg')}
+              alt=""
+              aria-hidden="true"
+              className={styles.iconImage}
+            />
             {cartItemsCount > 0 && (
               <span className={styles.badge}>{cartItemsCount}</span>
             )}
